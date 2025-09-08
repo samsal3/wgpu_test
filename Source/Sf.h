@@ -53,7 +53,7 @@ SF_EXPORT SfArena sfAllocateArena(U64 capactiy, U64 alignment) {
 
   return arena;
 }
-SF_EXPORT void sfFreeAllocatedArena(SfArena *arena) {
+SF_EXPORT void sfFreeArena(SfArena *arena) {
   sfFreeMemory(arena->data);
   arena->data = NULL;
   arena->position = 0;
