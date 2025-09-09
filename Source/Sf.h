@@ -51,13 +51,13 @@ typedef struct SFArena {
 #define sfOffsetOf(ty, f) (ptrdiff_t)(&((ty *)(NULL))->f)
 #define sfContainerOf(ty, p, f) (ty *)((char *)(p)-SF_OFFSET_OF(ty, f))
 
-#define sfInitQueue(q)                                                         \
+#define sfDefaultInitQueue(q)                                                  \
   do {                                                                         \
     (q)->next = (q);                                                           \
     (q)->prev = (q);                                                           \
   } while (0)
 
-#define sfForEachQueeu(q, h) for ((q) = (h)->next; (q) != (h); (q) = (q)->next)
+#define sfForEachQueue(q, h) for ((q) = (h)->next; (q) != (h); (q) = (q)->next)
 
 #define sfInsertIntoQueueHead(q, h)                                            \
   do {                                                                         \
@@ -81,6 +81,12 @@ typedef struct SFArena {
     (out)->size = SF_SIZE(s);                                                  \
   } while (0)
 
+#define sfDefaultInitString8(s)                                                \
+  do {                                                                         \
+    (s)->data = NULL;                                                          \
+    (s)->size = 0;                                                             \
+  } while (0)
+
 SF_EXPORT U64 sfAlignU64(U64 size, U64 alignment);
 
 SF_EXPORT void *sfAllocateMemory(U64 size);
@@ -95,8 +101,6 @@ SF_EXPORT void sfLoadFileToString8(SFArena *arena, SFString8 const *path,
                                    SFString8 *out);
 
 SF_EXPORT B32 sfCompareString8(SFString8 const *lhs, SFString8 const *rhs);
-
-SF_EXPORT void sfInitString8(SFString8 *s);
 
 SF_EXPORT void sfNullTerminateString8(SFArena *arena, SFString8 const *s,
                                       SFString8 *out);

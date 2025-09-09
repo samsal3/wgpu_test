@@ -2,11 +2,11 @@
 #include "SF.h"
 
 static void defaultInitErrorNode(ErrorNode *node) {
-  sfInitQueue(&node->queue);
+  sfDefaultInitQueue(&node->queue);
   node->line = 0;
-  sfInitString8(&node->file);
-  sfInitString8(&node->function);
-  sfInitString8(&node->message);
+  sfDefaultInitString8(&node->file);
+  sfDefaultInitString8(&node->function);
+  sfDefaultInitString8(&node->message);
 }
 
 static Size getNullTerminatedStringSize(char const *s, Size maxSize) {

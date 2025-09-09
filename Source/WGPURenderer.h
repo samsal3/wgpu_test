@@ -8,7 +8,9 @@
 typedef struct WGPURenderer {
   WGPUInstance instance;
   WGPUAdapter adapter;
-  B32 wasAdapterRequestFinished;
+  WGPUDevice device;
+  B32 hasDeviceRequestFinished;
+  B32 hasAdapterRequestFinished;
   SFQueue errorMessageQueue;
 } WGPURenderer;
 
