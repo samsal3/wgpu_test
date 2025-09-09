@@ -162,7 +162,7 @@ SF_EXPORT void sfLoadFileToString8(SFArena *arena, SFString8 const *path,
   Byte *data = 0;
   SFString8 nullTerminatedPath = {0};
 
-  sfInitString8(out);
+  sfDefaultInitString8(out);
 
   sfNullTerminateString8(arena, path, &nullTerminatedPath);
   if (!nullTerminatedPath.data)
@@ -211,16 +211,11 @@ SF_EXPORT B32 sfCompareString8(SFString8 const *lhs, SFString8 const *rhs) {
   return SF_TRUE;
 }
 
-SF_EXPORT void sfInitString8(SFString8 *s) {
-  s->data = NULL;
-  s->size = 0;
-}
-
 SF_EXPORT void sfNullTerminateString8(SFArena *arena, SFString8 const *s,
                                       SFString8 *out) {
   Byte *data = NULL;
 
-  sfInitString8(out);
+  sfDefaultInitString8(out);
 
   data = sfAllocate(arena, s->size + 1);
   if (data) {

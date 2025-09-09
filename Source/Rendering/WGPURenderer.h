@@ -1,7 +1,7 @@
 #ifndef WGPU_RENDERER_H
 #define WGPU_RENDERER_H
 
-#include "SF.h"
+#include <Common/SF.h>
 
 #include <webgpu/webgpu.h>
 

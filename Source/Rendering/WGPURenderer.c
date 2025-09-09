@@ -1,6 +1,6 @@
-#include "WGPURenderer.h"
-#include "Error.h"
-#include "SF.h"
+#include <Rendering/WGPURenderer.h>
+#include <Common/SF.h>
+#include <Common/Error.h>
 
 #include <webgpu/webgpu.h>
 
@@ -82,6 +82,7 @@ void createWGPURenderer(SFArena *arena, WGPURenderer *r) {
 
   {
     WGPUDeviceDescriptor desc = {0};
+
     desc.nextInChain = NULL;
     desc.label = "Device1";
     desc.requiredFeatureCount = 0;

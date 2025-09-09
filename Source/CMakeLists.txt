@@ -1,9 +1,6 @@
+add_subdirectory(Common)
+add_subdirectory(Rendering)
+add_subdirectory(Logic)
 target_sources(${PROJECT_NAME} PRIVATE 
-  Error.c
-  Error.h
-  Main.c 
-  SF.c 
-  SF.h
-  WGPURenderer.c
-  WGPURenderer.h
+  Main.c
 )

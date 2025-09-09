@@ -42,6 +42,8 @@ target_compile_options(${PROJECT_NAME} PUBLIC
     -fdiagnostics-color=always
     -Wno-comment
   ">"
+  "$<$<COMPILE_LANG_AND_ID:C,MSVC>:"
+  ">"
   "$<$<AND:$<COMPILE_LANG_AND_ID:C,Clang,AppleClang>,$<CONFIG:Debug>>:"
     -O0
     -g
@@ -49,9 +51,14 @@ target_compile_options(${PROJECT_NAME} PUBLIC
     -fsanitize=undefined
     -fsanitize=bounds
   ">"
+  "$<$<AND:$<COMPILE_LANG_AND_ID:C,MSVC>,$<CONFIG:Debug>>:"
+  ">"
   "$<$<AND:$<COMPILE_LANG_AND_ID:C,Clang,AppleClang>,$<CONFIG:Release>>:"
     -Ofast
-  ">")
+  ">"
+  "$<$<AND:$<COMPILE_LANG_AND_ID:C,MSVC>,$<CONFIG:Release>>:"
+  ">"
+)
 
 # link options
 target_link_options(${PROJECT_NAME} PUBLIC

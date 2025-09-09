@@ -1,7 +1,7 @@
 #include <webgpu/webgpu.h>
 
-#include "SF.h"
-#include "WGPURenderer.h"
+#include <Common/SF.h>
+#include <Rendering/WGPURenderer.h>
 
 int main(void) {
   SFArena arena  = {0};
