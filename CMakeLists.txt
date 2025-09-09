@@ -12,7 +12,7 @@ add_executable(${PROJECT_NAME})
 # features
 set_target_properties(${PROJECT_NAME}
     PROPERTIES 
-        C_STANDARD            99
+        C_STANDARD            90
         C_STANDARD_REQUIRED   ON
         C_EXTENSIONS          OFF
         CXX_STANDARD          17 
@@ -41,6 +41,7 @@ target_compile_options(${PROJECT_NAME} PUBLIC
 		-Walloca 
 		-Wvla 
     -fdiagnostics-color=always
+		-Wno-comment
   ">"
 	"$<$<AND:$<COMPILE_LANG_AND_ID:C,Clang,AppleClang>,$<CONFIG:Debug>>:"
 		-O0

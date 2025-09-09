@@ -1,21 +1,17 @@
 #include <webgpu/webgpu.h>
 
 #include "SF.h"
+#include "WGPURenderer.h"
 
 int main(void) {
-  SFArena arena = sfAllocateArena(1024 * 1024, 16);
+  SFArena arena  = {0};
+  sfAllocateArena(1024 * 1024, 16, &arena);
+  if (arena.data) {
+    WGPURenderer renderer = {0};
+    createWGPURenderer(&arena, &renderer);
+    assert(sfIsQueueEmpty(&renderer.errorMessageQueue));
 
-  SFS8 testFile = sfLoadFileToS8(&arena, SF_S8("test.txt"));
-  (void)testFile;
+    sfFreeArena(&arena);
+  }
 
-  SFS8 s = SF_S8("test");
-  (void)s;
-
-  WGPUInstanceDescriptor desc = {0};
-  desc.nextInChain = NULL;
-
-  WGPUInstance instance = wgpuCreateInstance(&desc);
-  wgpuInstanceRelease(instance);
-
-  sfFreeArena(&arena);
 }
