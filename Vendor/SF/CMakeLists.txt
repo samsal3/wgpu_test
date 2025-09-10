@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.23.1)
 
-project(WebGPUTest)
+project(SF)
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Bin)
+# set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Lib)
+# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Lib)
+# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Bin)
 
 # declare the library 
-add_executable(${PROJECT_NAME})
+add_library(${PROJECT_NAME})
 
 # features
 set_target_properties(${PROJECT_NAME} PROPERTIES 
@@ -19,17 +19,17 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 	CXX_EXTENSIONS        OFF)
 
 # add sources
-add_subdirectory(Source)
-
-# add libraries
-add_subdirectory(Vendor)
+target_sources(${PROJECT_NAME} PRIVATE 
+  SF.c
+  SF.h
+)
 
 # add includes
-target_include_directories(${PROJECT_NAME} 
-  PRIVATE Source)
+target_include_directories(${PROJECT_NAME} PUBLIC 
+  ${CMAKE_CURRENT_SOURCE_DIR})
 
 # compile options
-target_compile_options(${PROJECT_NAME} PUBLIC
+target_compile_options(${PROJECT_NAME} PRIVATE
   "$<$<COMPILE_LANG_AND_ID:C,Clang,AppleClang>:"
     -Wall
     -Wshadow
@@ -61,17 +61,9 @@ target_compile_options(${PROJECT_NAME} PUBLIC
 )
 
 # link options
-target_link_options(${PROJECT_NAME} PUBLIC
+target_link_options(${PROJECT_NAME} PRIVATE
   "$<$<AND:$<COMPILE_LANG_AND_ID:C,Clang,AppleClang>,$<CONFIG:Debug>>:"
     -fsanitize=address
     -fsanitize=undefined
     -fsanitize=bounds
   ">")
-
-# link libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE 
-  SF
-  webgpu
-)
-
-target_copy_webgpu_binaries(${PROJECT_NAME})

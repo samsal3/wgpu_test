@@ -48,6 +48,7 @@ typedef struct SFArena {
   U64 alignment;
 } SFArena;
 
+#define unused(e) (void)e;
 #define sfOffsetOf(ty, f) (ptrdiff_t)(&((ty *)(NULL))->f)
 #define sfContainerOf(ty, p, f) (ty *)((char *)(p)-SF_OFFSET_OF(ty, f))
 
@@ -149,7 +150,7 @@ SF_EXPORT void *sfAllocate(SFArena *arena, U64 size) {
 
   data = &arena->data[previousPosition];
   for (i = 0; i < size; ++i)
-    data[i] = 0;
+    data[i]  = 0xD1;
 
   return data;
 }
@@ -160,8 +161,9 @@ SF_EXPORT void sfLoadFileToString8(SFArena *arena, SFString8 const *path,
   long bufferSize = 0;
   size_t reqSize = 0;
   Byte *data = 0;
-  SFString8 nullTerminatedPath = {0};
+  SFString8 nullTerminatedPath;
 
+  sfDefaultInitString8(&nullTerminatedPath);
   sfDefaultInitString8(out);
 
   sfNullTerminateString8(arena, path, &nullTerminatedPath);

@@ -1,5 +1,6 @@
 #include "Error.h"
-#include "SF.h"
+
+#include <SF.h>
 
 static void defaultInitErrorNode(ErrorNode *node) {
   sfDefaultInitQueue(&node->queue);

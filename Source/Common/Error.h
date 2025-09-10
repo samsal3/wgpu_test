@@ -1,7 +1,7 @@
 #ifndef ERROR_H
 #define ERROR_H
 
-#include <Common/SF.h>
+#include <SF.h>
 
 typedef struct ErrorMessageNode {
   SFQueue queue;
