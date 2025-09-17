@@ -4,6 +4,16 @@
 
 #include <webgpu/webgpu.h>
 
+typedef struct RequestWGPUDeviceData {
+  WGPUDevice device;
+  B32 done;
+} RequestWGPUDeviceData;
+
+typedef struct RequestWGPUAdapterData {
+  WGPUAdapter adapter;
+  B32 done;
+} RequestWGPUAdapterData;
+
 static void defaultInitWGPURenderer(WGPURenderer *r) {
   r->instance = NULL;
   r->adapter = NULL;
@@ -12,33 +22,31 @@ static void defaultInitWGPURenderer(WGPURenderer *r) {
   r->commandEncoder = NULL;
   r->currentCommandBuffer = NULL;
 
-  r->hasDeviceRequestFinished = SF_FALSE;
-  r->hasAdapterRequestFinished = SF_FALSE;
   sfDefaultInitQueue(&r->errorMessageQueue);
 }
 
 void setWGPUAdapter(WGPURequestAdapterStatus status, WGPUAdapter adapter,
                     char const *message, void *userData) {
-  WGPURenderer *r = userData;
+  RequestWGPUAdapterData *data = userData;
 
   (void)message;
 
   if (status == WGPURequestAdapterStatus_Success)
-    r->adapter = adapter;
+    data->adapter = adapter;
 
-  r->hasAdapterRequestFinished = SF_TRUE;
+  data->done = SF_TRUE;
 }
 
 void setWGPUDevice(WGPURequestDeviceStatus status, WGPUDevice device,
                    char const *message, void *userData) {
-   WGPURenderer *r = userData;
+   RequestWGPUDeviceData *data = userData;
 
   (void)message;
 
   if (status == WGPURequestAdapterStatus_Success)
-    r->device = device;
+    data->device = device;
 
-  r->hasDeviceRequestFinished = SF_TRUE;
+  data->done = SF_TRUE;
 }
 
 void unhandledWGPUError(WGPUErrorType type, char const* message, void* userData) {
@@ -51,30 +59,23 @@ void unhandledWGPUError(WGPUErrorType type, char const* message, void* userData)
 #ifdef __EMSCRIPTEN__
 #endif
 
-void awaitAdapterRequest(WGPURenderer *r) {
+void awaitWGPUAdapterRequest(RequestWGPUAdapterData *data) {
 #ifdef __EMSCRIPTEN__
-  while (!r->hasAdapterRequestFinished)
+  while (!data->done)
     emscripten_sleep(100);
 #else
-  unused(r);
+  unused(data);
 #endif
 }
 
-void awaitDeviceRequest(WGPURenderer *r) {
+void awaitWGPUDeviceRequest(RequestWGPUDeviceData *data) {
 #ifdef __EMSCRIPTEN__
-  while (!r->hasDeviceRequestFinished)
+  while (!data->done)
     emscripten_sleep(100);
 #else
-  unused(r);
+  unused(data);
 #endif
 }
-
-typedef struct DeviceInformation {
-  WGPUFeatureName *features;
-  U32 featureCount;
-  WGPUSupportedLimits limits;
-} DeviceInformation;
-
 
 void createWGPURenderer(SFArena *arena, WGPURenderer *r) {
   defaultInitWGPURenderer(r);
@@ -91,6 +92,7 @@ void createWGPURenderer(SFArena *arena, WGPURenderer *r) {
   }
 
   {
+    RequestWGPUAdapterData request;
     WGPURequestAdapterOptions options;
 
     options.nextInChain = NULL;
@@ -99,13 +101,17 @@ void createWGPURenderer(SFArena *arena, WGPURenderer *r) {
     options.backendType = WGPUBackendType_Null;
     options.forceFallbackAdapter = 0;
 
-    wgpuInstanceRequestAdapter(r->instance, &options, setWGPUAdapter, r);
-    awaitAdapterRequest(r);
+    request.adapter = NULL;
+    request.done = SF_FALSE;
+
+    wgpuInstanceRequestAdapter(r->instance, &options, setWGPUAdapter, &request);
+    awaitWGPUAdapterRequest(&request);
     if (!r->adapter)
       goto error;
   }
 
   {
+    RequestWGPUDeviceData request;
     WGPUDeviceDescriptor desc;
 
     desc.nextInChain = NULL;
@@ -118,8 +124,11 @@ void createWGPURenderer(SFArena *arena, WGPURenderer *r) {
     desc.deviceLostCallback = NULL;
     desc.deviceLostUserdata = NULL;
 
-    wgpuAdapterRequestDevice(r->adapter, &desc, setWGPUDevice, r); 
-    awaitDeviceRequest(r); 
+    request.device = NULL;
+    request.done = SF_FALSE;
+
+    wgpuAdapterRequestDevice(r->adapter, &desc, setWGPUDevice, &request); 
+    awaitWGPUDeviceRequest(&request); 
     if (!r->device)
       goto error;
 

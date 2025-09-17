@@ -6,6 +6,7 @@
 #include <webgpu/webgpu.h>
 
 typedef struct WGPUFrame {
+  SFQueue queue;
   WGPUCommandEncoder encoder;
   WGPUCommandBuffer buffer;
 } WGPUFrame;
@@ -18,8 +19,9 @@ typedef struct WGPURenderer {
   WGPUCommandEncoder commandEncoder;
   WGPUCommandBuffer currentCommandBuffer;
 
-  B32 hasDeviceRequestFinished;
-  B32 hasAdapterRequestFinished;
+  WGPUFrame frames[2];
+  U32 currentFrameIndex;
+
   SFQueue errorMessageQueue;
 } WGPURenderer;
 
