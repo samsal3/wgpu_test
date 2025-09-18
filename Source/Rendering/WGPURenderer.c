@@ -39,7 +39,7 @@ void setWGPUAdapter(WGPURequestAdapterStatus status, WGPUAdapter adapter,
 
 void setWGPUDevice(WGPURequestDeviceStatus status, WGPUDevice device,
                    char const *message, void *userData) {
-   RequestWGPUDeviceData *data = userData;
+  RequestWGPUDeviceData *data = userData;
 
   (void)message;
 
@@ -49,11 +49,9 @@ void setWGPUDevice(WGPURequestDeviceStatus status, WGPUDevice device,
   data->done = SF_TRUE;
 }
 
-void unhandledWGPUError(WGPUErrorType type, char const* message, void* userData) {
-  unused(type)
-  unused(message)
-  unused(userData)
-  assert(0);
+void unhandledWGPUError(WGPUErrorType type, char const *message,
+                        void *userData) {
+  unused(type) unused(message) unused(userData) assert(0);
 }
 
 #ifdef __EMSCRIPTEN__
@@ -127,15 +125,14 @@ void createWGPURenderer(SFArena *arena, WGPURenderer *r) {
     request.device = NULL;
     request.done = SF_FALSE;
 
-    wgpuAdapterRequestDevice(r->adapter, &desc, setWGPUDevice, &request); 
-    awaitWGPUDeviceRequest(&request); 
+    wgpuAdapterRequestDevice(r->adapter, &desc, setWGPUDevice, &request);
+    awaitWGPUDeviceRequest(&request);
     if (!r->device)
       goto error;
 
     r->queue = wgpuDeviceGetQueue(r->device);
   }
 
- 
   {
     WGPUCommandEncoderDescriptor desc;
 
@@ -147,7 +144,6 @@ void createWGPURenderer(SFArena *arena, WGPURenderer *r) {
       goto error;
   }
 
-
   wgpuDeviceSetUncapturedErrorCallback(r->device, unhandledWGPUError, r);
 
   return;
@@ -156,13 +152,9 @@ error:
   destroyWGPURenderer(r);
 }
 
-void beginWGPURendererFrame(WGPURenderer *r) {
-  unused(r);
-}
+void beginWGPURendererFrame(WGPURenderer *r) { unused(r); }
 
-void endWGPURendererFrame(WGPURenderer *r) {
-  unused(r);
-}
+void endWGPURendererFrame(WGPURenderer *r) { unused(r); }
 
 void destroyWGPURenderer(WGPURenderer *r) {
   if (r->queue) {

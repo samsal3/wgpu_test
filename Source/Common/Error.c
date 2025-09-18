@@ -21,7 +21,7 @@ static Size getNullTerminatedStringSize(char const *s, Size maxSize) {
 }
 
 void addErrorToQueue(SFArena *a, SFQueue *q, char const *msg, char const *f,
-                    char const *fn, int l) {
+                     char const *fn, int l) {
   ErrorNode *node = sfAllocate(a, sizeof(ErrorNode));
   if (node) {
     defaultInitErrorNode(node);

@@ -31,7 +31,6 @@ typedef int32_t B32;
 #define SF_MIN(a, b) ((a) < (b) ? (a) : (b))
 #define SF_MAX(a, b) ((a) > (b) ? (a) : (b))
 
-
 typedef struct SFString8 {
   char const *data;
   Size size;
@@ -49,7 +48,6 @@ typedef struct SFArena {
   U64 alignment;
 } SFArena;
 
-
 typedef struct SFStringBuilder {
   SFArena *arena;
   Byte *data;
@@ -57,10 +55,9 @@ typedef struct SFStringBuilder {
   Size capacity;
 } SFStringBuilder;
 
-
 #define unused(e) (void)e;
 #define sfOffsetOf(ty, f) (ptrdiff_t)(&((ty *)(NULL))->f)
-#define sfContainerOf(ty, p, f) (ty *)((char *)(p)-SF_OFFSET_OF(ty, f))
+#define sfContainerOf(ty, p, f) (ty *)((char *)(p) - SF_OFFSET_OF(ty, f))
 
 #define sfDefaultInitQueue(q)                                                  \
   do {                                                                         \
@@ -117,8 +114,10 @@ SF_EXPORT void sfNullTerminateString8(SFArena *arena, SFString8 const *s,
                                       SFString8 *out);
 
 SF_EXPORT void sfInitStringBuilder(SFArena *arena, SFStringBuilder *sb);
-SF_EXPORT B32 sfAppendRawString(SFStringBuilder *sb, Size size, char const *str);
-#define sfAppendStringLiteral(sb, str) sfAppendRawString(sb, SF_SIZE(str) - 1, str)
+SF_EXPORT B32 sfAppendRawString(SFStringBuilder *sb, Size size,
+                                char const *str);
+#define sfAppendStringLiteral(sb, str)                                         \
+  sfAppendRawString(sb, SF_SIZE(str) - 1, str)
 
 #ifdef SF_IMPLEMENTATION
 
@@ -164,7 +163,7 @@ SF_EXPORT void *sfAllocate(SFArena *arena, U64 size) {
 
   data = &arena->data[previousPosition];
   for (i = 0; i < size; ++i)
-    data[i]  = 0xD1;
+    data[i] = 0xD1;
 
   return data;
 }
@@ -247,23 +246,21 @@ SF_EXPORT void sfNullTerminateString8(SFArena *arena, SFString8 const *s,
   }
 }
 
-SF_EXPORT void sfInitStringBuilder(SFArena* arena, SFStringBuilder* sb) {
+SF_EXPORT void sfInitStringBuilder(SFArena *arena, SFStringBuilder *sb) {
   sb->arena = arena;
   sb->data = NULL;
   sb->dataSize = 0;
   sb->capacity = 0;
 }
 
-static void sfMemoryCopy(Byte* dst, Byte const* src, Size size) {
+static void sfMemoryCopy(Byte *dst, Byte const *src, Size size) {
   Size i = 0;
   for (i = 0; i < size; ++i)
     dst[i] = src[i];
 }
 
-static B32 sfGrowStringBuilderCapacityBySize(SFStringBuilder* sb, Size size) {
+static B32 sfGrowStringBuilderCapacityBySize(SFStringBuilder *sb, Size size) {
   Byte *data = NULL;
-  Size newSize = 0;
-  Size newCapacity = 0;
 
   if (size < 0)
     return SF_FALSE;
@@ -276,19 +273,21 @@ static B32 sfGrowStringBuilderCapacityBySize(SFStringBuilder* sb, Size size) {
     return SF_FALSE;
 
   sfMemoryCopy(data, sb->data, sb->dataSize);
-  
+
   sb->data = data;
   sb->capacity = size;
+  return SF_TRUE;
 }
 
-SF_EXPORT B32 sfAppendRawString(SFStringBuilder *sb, Size size, char const *str) {
+SF_EXPORT B32 sfAppendRawString(SFStringBuilder *sb, Size size,
+                                char const *str) {
   Size oldDataSize = sb->dataSize;
 
-  if (!sfGrowStringBuilderCapacityForSize(sb, sb->dataSize + size))
+  if (!sfGrowStringBuilderCapacityBySize(sb, sb->dataSize + size))
     return SF_FALSE;
 
   sb->dataSize += size;
-  sfMemoryCopy(sb->data[oldDataSize], str, size);
+  sfMemoryCopy(&sb->data[oldDataSize], str, size);
   return SF_TRUE;
 }
 
