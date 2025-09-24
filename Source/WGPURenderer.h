@@ -20,7 +20,7 @@ typedef struct WGPURenderer {
 
   WGPUFrame frames[2];
   U32 currentFrameIndex;
-  
+
   SFQueue errorMessageQueue;
 } WGPURenderer;
 

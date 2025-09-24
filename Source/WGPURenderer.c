@@ -150,7 +150,6 @@ void createWGPURenderer(SFArena *arena, WGPURenderer *r) {
       goto error;
   }
 
-
   wgpuDeviceSetUncapturedErrorCallback(r->device, unhandledWGPUError, r);
 
   return;

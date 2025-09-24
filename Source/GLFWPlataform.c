@@ -14,7 +14,6 @@ B32 createGLFWPlataform(GLFWPlataform *p, I32 w, I32 h) {
   if (!p->window)
     goto error;
 
-
   return SF_TRUE;
 
 error:
@@ -34,4 +33,3 @@ B32 pollGLFWEvents(GLFWPlataform *p) {
   glfwPollEvents();
   return !glfwWindowShouldClose(p->window);
 }
-

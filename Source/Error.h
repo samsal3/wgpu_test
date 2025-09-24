@@ -11,16 +11,17 @@ typedef struct ErrorMessageNode {
   SFString8 message;
 } ErrorNode;
 
-void addErrorToQueueImplementation(SFArena *arena, SFQueue *queue, char const *msg,
-                     char const *f, char const *fn, int l);
+void addErrorToQueueImplementation(SFArena *arena, SFQueue *queue,
+                                   char const *msg, char const *f,
+                                   char const *fn, int l);
 
-#define addErrorToQueue(a, q, msg)\
-    addErrorToQueueImplementation(a, q, msg, __FILE__, __FUNCTION__, __LINE__)
-
+#define addErrorToQueue(a, q, msg)                                             \
+  addErrorToQueueImplementation(a, q, msg, __FILE__, __FUNCTION__, __LINE__)
 
 #define addErrorToQueueAndGoto(a, q, msg, label)                               \
   do {                                                                         \
-    addErrorToQueueImplementation(a, q, msg, __FILE__, __FUNCTION__, __LINE__);              \
+    addErrorToQueueImplementation(a, q, msg, __FILE__, __FUNCTION__,           \
+                                  __LINE__);                                   \
     goto label;                                                                \
   } while (0)
 

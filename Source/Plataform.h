@@ -8,4 +8,3 @@ void deinitPlataform(void);
 B32 pollPlataformEvents(void);
 
 #endif
-

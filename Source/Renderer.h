@@ -3,7 +3,6 @@
 
 typedef struct Renderer Renderer;
 
-void 
+void
 
 #endif
-

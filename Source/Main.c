@@ -1,5 +1,5 @@
-#include "WGPURenderer.h"
 #include "Plataform.h"
+#include "WGPURenderer.h"
 
 #include <stdio.h>
 
@@ -8,7 +8,7 @@
 
 int main(void) {
   WGPURenderer renderer = {0};
-  SFArena arena  = {0};
+  SFArena arena = {0};
 
   sfAllocateArena(1024 * 1024, 16, &arena);
   if (!arena.data)
@@ -21,7 +21,8 @@ int main(void) {
   if (!validateWGPURenderer(&renderer))
     goto cleanup;
 
-  while (pollPlataformEvents()) {}
+  while (pollPlataformEvents()) {
+  }
 
 cleanup:
   destroyWGPURenderer(&renderer);
