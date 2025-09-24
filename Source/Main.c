@@ -1,7 +1,10 @@
-#include <webgpu/webgpu.h>
+#include "WGPURenderer.h"
+#include "Plataform.h"
+
+#include <stdio.h>
 
 #include <SF.h>
-#include <Rendering/WGPURenderer.h>
+#include <webgpu/webgpu.h>
 
 int main(void) {
   WGPURenderer renderer = {0};
@@ -9,10 +12,19 @@ int main(void) {
 
   sfAllocateArena(1024 * 1024, 16, &arena);
   if (!arena.data)
-    return 0;
+    goto cleanup;
+
+  if (!initPlataform(300, 300))
+    goto cleanup;
 
   createWGPURenderer(&arena, &renderer);
-  assert(sfIsQueueEmpty(&renderer.errorMessageQueue));
+  if (!validateWGPURenderer(&renderer))
+    goto cleanup;
 
+  while (pollPlataformEvents()) {}
+
+cleanup:
+  destroyWGPURenderer(&renderer);
+  deinitPlataform();
   sfFreeArena(&arena);
 }

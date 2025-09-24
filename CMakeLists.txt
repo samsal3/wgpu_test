@@ -72,6 +72,7 @@ target_link_options(${PROJECT_NAME} PUBLIC
 target_link_libraries(${PROJECT_NAME} PRIVATE 
   SF
   webgpu
+  glfw
 )
 
 target_copy_webgpu_binaries(${PROJECT_NAME})
