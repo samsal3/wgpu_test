@@ -1,7 +1,7 @@
-#include "GLFWPlataform.h"
+#include "glfw_plataform.h"
 
-B32 createGLFWPlataform(GLFWPlataform *p, I32 w, I32 h) {
-  p->hasGLFWBeenInitialized = SF_FALSE;
+b32 glfw_plataform_init(i32 w, i32 h, struct glfw_plataform *p) {
+  p->has_glfw_been_initialized = SF_FALSE;
   p->window = NULL;
 
   if (!glfwInit())
@@ -17,19 +17,19 @@ B32 createGLFWPlataform(GLFWPlataform *p, I32 w, I32 h) {
   return SF_TRUE;
 
 error:
-  destroyGLFWPlataform(p);
+  glfw_plataform_deinit(p);
   return SF_FALSE;
 }
 
-void destroyGLFWPlataform(GLFWPlataform *p) {
-  if (p->hasGLFWBeenInitialized)
+void glfw_plataform_deinit(struct glfw_plataform *p) {
+  if (p->has_glfw_been_initialized)
     glfwTerminate(); // NOTE(samsal): This destroys all created windows
 
   p->window = NULL;
-  p->hasGLFWBeenInitialized = SF_FALSE;
+  p->has_glfw_been_initialized = SF_FALSE;
 }
 
-B32 pollGLFWEvents(GLFWPlataform *p) {
+b32 glfw_plataform_poll_events(struct glfw_plataform *p) {
   glfwPollEvents();
   return !glfwWindowShouldClose(p->window);
 }

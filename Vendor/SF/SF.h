@@ -13,16 +13,13 @@
 #define SF_EXPORT
 #endif // SF_IMPLEMENTATION
 
-typedef char Byte;
-typedef ptrdiff_t Size;
-
-typedef uint64_t U64;
-typedef uint32_t U32;
-
-typedef int64_t I64;
-typedef int32_t I32;
-
-typedef int32_t B32;
+typedef char byte;
+typedef ptrdiff_t size;
+typedef uint64_t u64;
+typedef uint32_t u32;
+typedef int64_t i64;
+typedef int32_t i32;
+typedef int32_t b32;
 
 #define SF_TRUE 1
 #define SF_FALSE 0
@@ -31,43 +28,37 @@ typedef int32_t B32;
 #define SF_MIN(a, b) ((a) < (b) ? (a) : (b))
 #define SF_MAX(a, b) ((a) > (b) ? (a) : (b))
 
-typedef struct SFString8 {
+struct sf_string_8 {
+  size size;
   char const *data;
-  Size size;
-} SFString8;
+};
 
-typedef struct SFQueue {
-  struct SFQueue *prev;
-  struct SFQueue *next;
-} SFQueue;
+struct sf_queue {
+  struct sf_queue *prev;
+  struct sf_queue *next;
+};
 
-typedef struct SFArena {
-  Byte *data;
-  U64 position;
-  U64 capacity;
-  U64 alignment;
-} SFArena;
+struct sf_arena {
+  byte *data;
+  u64 position;
+  u64 capacity;
+  u64 alignment;
+};
 
-typedef struct SFStringBuilder {
-  SFArena *arena;
-  Byte *data;
-  Size dataSize;
-  Size capacity;
-} SFStringBuilder;
+#define UNUSED(e) (void)(e)
 
-#define unused(e) (void)e;
-#define sfOffsetOf(ty, f) (ptrdiff_t)(&((ty *)(NULL))->f)
-#define sfContainerOf(ty, p, f) (ty *)((char *)(p) - SF_OFFSET_OF(ty, f))
+#define SF_OFFSET_OF(ty, f) (ptrdiff_t)(&((ty *)(NULL))->f)
+#define SF_CONTAINER_OF(ty, p, f) (ty *)((char *)(p) - SF_OFFSET_OF(ty, f))
 
-#define sfDefaultInitQueue(q)                                                  \
+#define SF_QUEUE_INIT(q)                                                       \
   do {                                                                         \
     (q)->next = (q);                                                           \
     (q)->prev = (q);                                                           \
   } while (0)
 
-#define sfForEachQueue(q, h) for ((q) = (h)->next; (q) != (h); (q) = (q)->next)
+#define SF_QUEUE_FOR_EACH(q, h) for ((q) = (h)->next; (q) != (h); (q) = (q)->next)
 
-#define sfInsertIntoQueueHead(q, h)                                            \
+#define SF_QUEUE_INSERT_INTO_HEAD(q, h)                                        \
   do {                                                                         \
     (q)->next = (h)->next;                                                     \
     (q)->prev = (h);                                                           \
@@ -75,62 +66,57 @@ typedef struct SFStringBuilder {
     (h)->next = (q);                                                           \
   } while (0)
 
-#define sfRemoveFromQueue(q)                                                   \
+#define SF_QUEUE_REMOVE(q)                                                     \
   do {                                                                         \
     (q)->prev->next = (q)->next;                                               \
     (q)->next->prev = (q)->prev;                                               \
   } while (0)
 
-#define sfIsQueueEmpty(q) ((q)->next == (q))
+#define SF_QUEUE_IS_EMPTY(q) ((q)->next == (q))
 
-#define sfAsString8(s, out)                                                    \
+#define SF_AS_STRING_8(s, out)                                                 \
   do {                                                                         \
     (out)->data = &(s)[0];                                                     \
     (out)->size = SF_SIZE(s);                                                  \
   } while (0)
 
-#define sfDefaultInitString8(s)                                                \
+#define SF_STRING_8_INIT(s)                                                    \
   do {                                                                         \
     (s)->data = NULL;                                                          \
     (s)->size = 0;                                                             \
   } while (0)
 
-SF_EXPORT U64 sfAlignU64(U64 size, U64 alignment);
+SF_EXPORT u64 sf_u64_align(u64 size, u64 alignment);
+SF_EXPORT void *sf_allocate_memory(u64 size);
+SF_EXPORT void sf_free_memory(void *data);
 
-SF_EXPORT void *sfAllocateMemory(U64 size);
-SF_EXPORT void sfFreeMemory(void *data);
+SF_EXPORT void sf_allocate_arena(u64 capactiy, u64 alignment, struct sf_arena *arena);
+SF_EXPORT void sf_free_arena(struct sf_arena *arena);
+SF_EXPORT void *sf_allocate(struct sf_arena *arena, u64 size);
 
-SF_EXPORT void sfAllocateArena(U64 capactiy, U64 alignment, SFArena *arena);
-SF_EXPORT void sfFreeArena(SFArena *arena);
+SF_EXPORT void sf_load_file_into_string_8(struct sf_arena *arena,
+                                          struct sf_string_8 *path,
+                                          struct sf_string_8 *out);
 
-SF_EXPORT void *sfAllocate(SFArena *arena, U64 size);
+SF_EXPORT b32 sf_compare_string_8(struct sf_string_8 const *lhs, struct sf_string_8 const *rhs);
 
-SF_EXPORT void sfLoadFileToString8(SFArena *arena, SFString8 const *path,
-                                   SFString8 *out);
-
-SF_EXPORT B32 sfCompareString8(SFString8 const *lhs, SFString8 const *rhs);
-
-SF_EXPORT void sfNullTerminateString8(SFArena *arena, SFString8 const *s,
-                                      SFString8 *out);
-
-SF_EXPORT void sfInitStringBuilder(SFArena *arena, SFStringBuilder *sb);
-SF_EXPORT B32 sfAppendRawString(SFStringBuilder *sb, Size size,
-                                char const *str);
-#define sfAppendStringLiteral(sb, str)                                         \
-  sfAppendRawString(sb, SF_SIZE(str) - 1, str)
+SF_EXPORT void sf_null_terminate_string_8(struct sf_arena *arena,
+                                          struct sf_string_8 const *s,
+                                          struct sf_string_8 *out);
 
 #ifdef SF_IMPLEMENTATION
 
-SF_EXPORT U64 sfAlignU64(U64 value, U64 alignment) {
+SF_EXPORT u64 sf_u64_align(u64 value, u64 alignment) {
   return (value + alignment - 1) & ~(alignment - 1);
 }
 
-SF_EXPORT void *sfAllocateMemory(U64 size) { return malloc(size); }
+SF_EXPORT void *sf_allocate_memory(u64 size) { return malloc(size); }
 
-SF_EXPORT void sfFreeMemory(void *data) { free(data); }
+SF_EXPORT void sf_free_memory(void *data) { free(data); }
 
-SF_EXPORT void sfAllocateArena(U64 capacity, U64 alignment, SFArena *arena) {
-  arena->data = sfAllocateMemory(capacity);
+SF_EXPORT void sf_allocate_arena(u64 capacity, u64 alignment,
+                               struct sf_arena *arena) {
+  arena->data = sf_allocate_memory(capacity);
   if (arena->data) {
     arena->position = 0;
     arena->capacity = capacity;
@@ -142,79 +128,80 @@ SF_EXPORT void sfAllocateArena(U64 capacity, U64 alignment, SFArena *arena) {
   }
 }
 
-SF_EXPORT void sfFreeArena(SFArena *arena) {
-  sfFreeMemory(arena->data);
+SF_EXPORT void sf_free_arena(struct sf_arena *arena) {
+  sf_free_memory(arena->data);
   arena->data = NULL;
   arena->position = 0;
   arena->capacity = 0;
   arena->alignment = 0;
 }
 
-SF_EXPORT void *sfAllocate(SFArena *arena, U64 size) {
-  U64 i = 0, previousPosition = 0;
-  Byte *data = NULL;
-  U64 reqSize = arena->position + size;
+SF_EXPORT void *sf_allocate(struct sf_arena *arena, u64 size) {
+  byte *data = NULL;
+  u64 i = 0, prev = 0, req = arena->position + size;
 
-  if (reqSize > arena->capacity)
+  if (req > arena->capacity)
     return NULL;
 
-  previousPosition = arena->position;
-  arena->position = sfAlignU64(reqSize, arena->alignment);
+  prev= arena->position;
+  arena->position = sf_u64_align(req, arena->alignment);
 
-  data = &arena->data[previousPosition];
+  data = &arena->data[prev];
   for (i = 0; i < size; ++i)
     data[i] = 0xD1;
 
   return data;
 }
 
-SF_EXPORT void sfLoadFileToString8(SFArena *arena, SFString8 const *path,
-                                   SFString8 *out) {
+SF_EXPORT void sf_load_file_into_string_8(struct sf_arena *arena,
+                                          struct sf_string_8 *path,
+                                          struct sf_string_8 *out) {
   FILE *fd = NULL;
-  long bufferSize = 0;
-  size_t reqSize = 0;
-  Byte *data = 0;
-  SFString8 nullTerminatedPath;
+  long buf_size = 0;
+  size_t req_size = 0;
+  byte *data = 0;
+  struct sf_string_8 null_terminated_path;
 
-  sfDefaultInitString8(&nullTerminatedPath);
-  sfDefaultInitString8(out);
+  SF_STRING_8_INIT(&null_terminated_path);
+  SF_STRING_8_INIT(out);
 
-  sfNullTerminateString8(arena, path, &nullTerminatedPath);
-  if (!nullTerminatedPath.data)
+  sf_null_terminate_string_8(arena, path, &null_terminated_path);
+  if (!null_terminated_path.data)
     goto cleanup;
 
-  fd = fopen(nullTerminatedPath.data, "r");
+  fd = fopen(null_terminated_path.data, "r");
   if (!fd)
     goto cleanup;
 
   if (0 != fseek(fd, 0L, SEEK_END))
     goto cleanup;
 
-  bufferSize = ftell(fd);
-  if (-1 == bufferSize)
+  buf_size = ftell(fd);
+  if (-1 == buf_size)
     goto cleanup;
 
-  data = sfAllocate(arena, bufferSize);
+  data = sf_allocate(arena, buf_size);
   if (!data)
     goto cleanup;
 
   if (0 != fseek(fd, 0L, SEEK_SET))
     goto cleanup;
 
-  reqSize = fread(data, sizeof(char), bufferSize, fd);
+  req_size = fread(data, sizeof(char), buf_size, fd);
   if (ferror(fd))
     goto cleanup;
 
   out->data = data;
-  out->size = reqSize;
+  out->size = req_size;
 
 cleanup:
   if (fd)
     fclose(fd);
 }
 
-SF_EXPORT B32 sfCompareString8(SFString8 const *lhs, SFString8 const *rhs) {
-  Size i = 0;
+SF_EXPORT b32 sf_compare_string_8(struct sf_string_8 const *lhs,
+                                  struct sf_string_8 const *rhs) {
+  size i = 0;
 
   if (lhs->size != rhs->size)
     return SF_FALSE;
@@ -226,15 +213,16 @@ SF_EXPORT B32 sfCompareString8(SFString8 const *lhs, SFString8 const *rhs) {
   return SF_TRUE;
 }
 
-SF_EXPORT void sfNullTerminateString8(SFArena *arena, SFString8 const *s,
-                                      SFString8 *out) {
-  Byte *data = NULL;
+SF_EXPORT void sf_null_terminate_string_8(struct sf_arena *arena,
+                                          struct sf_string_8 const *s,
+                                      struct sf_string_8 *out) {
+  byte *data = NULL;
 
-  sfDefaultInitString8(out);
+  SF_STRING_8_INIT(out);
 
-  data = sfAllocate(arena, s->size + 1);
+  data = sf_allocate(arena, s->size + 1);
   if (data) {
-    Size i = 0;
+    size i = 0;
 
     for (i = 0; i < s->size; ++i)
       data[i] = s->data[i];
@@ -244,51 +232,6 @@ SF_EXPORT void sfNullTerminateString8(SFArena *arena, SFString8 const *s,
     out->data = data;
     out->size = s->size;
   }
-}
-
-SF_EXPORT void sfInitStringBuilder(SFArena *arena, SFStringBuilder *sb) {
-  sb->arena = arena;
-  sb->data = NULL;
-  sb->dataSize = 0;
-  sb->capacity = 0;
-}
-
-static void sfMemoryCopy(Byte *dst, Byte const *src, Size size) {
-  Size i = 0;
-  for (i = 0; i < size; ++i)
-    dst[i] = src[i];
-}
-
-static B32 sfGrowStringBuilderCapacityBySize(SFStringBuilder *sb, Size size) {
-  Byte *data = NULL;
-
-  if (size < 0)
-    return SF_FALSE;
-
-  if (size <= sb->capacity)
-    return SF_TRUE;
-
-  data = sfAllocate(sb->arena, size);
-  if (!data)
-    return SF_FALSE;
-
-  sfMemoryCopy(data, sb->data, sb->dataSize);
-
-  sb->data = data;
-  sb->capacity = size;
-  return SF_TRUE;
-}
-
-SF_EXPORT B32 sfAppendRawString(SFStringBuilder *sb, Size size,
-                                char const *str) {
-  Size oldDataSize = sb->dataSize;
-
-  if (!sfGrowStringBuilderCapacityBySize(sb, sb->dataSize + size))
-    return SF_FALSE;
-
-  sb->dataSize += size;
-  sfMemoryCopy(&sb->data[oldDataSize], str, size);
-  return SF_TRUE;
 }
 
 #endif // SF_IMPLEMENTATION

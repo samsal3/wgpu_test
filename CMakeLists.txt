@@ -22,7 +22,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 add_subdirectory(Source)
 
 # add libraries
-add_subdirectory(Vendor)
+add_subdirectory(vendor)
 
 # add includes
 target_include_directories(${PROJECT_NAME} 
@@ -70,7 +70,7 @@ target_link_options(${PROJECT_NAME} PUBLIC
 
 # link libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE 
-  SF
+  sf
   webgpu
   glfw
 )

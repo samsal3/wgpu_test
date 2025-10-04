@@ -1,14 +1,14 @@
 target_sources(${PROJECT_NAME} PRIVATE
-  Error.c
-  Error.h
-  GLFWPlataform.c
-  GLFWPlataform.h
-  Main.c
-  Plataform.c
-  Plataform.h
-  Renderer.c
-  Renderer.h
-  WGPURenderer.c
-  WGPURenderer.h
+  
+  
+  "glfw_plataform.c"
+  "glfw_plataform.h"
+  "main.c"
+  "plataform.c"
+  "plataform.h"
+  "renderer.c"
+  "renderer.h"
+  "wgpu_renderer.c"
+  "wgpu_renderer.h"
 )
 

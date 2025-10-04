@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.23.1)
 
-project(SF)
+project(sf)
 
 # set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Lib)
 # set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Lib)
@@ -20,8 +20,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 # add sources
 target_sources(${PROJECT_NAME} PRIVATE 
-  SF.c
-  SF.h
+  "sf.c"
+  "sf.h"
 )
 
 # add includes

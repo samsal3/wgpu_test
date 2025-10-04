@@ -1,10 +1,10 @@
 #ifndef PLATAFORM_H
 #define PLATAFORM_H
 
-#include <SF.h>
+#include <sf.h>
 
-B32 initPlataform(I32 w, I32 h);
-void deinitPlataform(void);
-B32 pollPlataformEvents(void);
+b32 plataform_init(i32 w, i32 h);
+void plataform_deinit(void);
+b32 plataform_poll_events(void);
 
 #endif

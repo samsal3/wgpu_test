@@ -1,13 +1,13 @@
-#include "Plataform.h"
+#include "plataform.h"
 
-#include "GLFWPlataform.h"
+#include "glfw_plataform.h"
 
-GLFWPlataform plataform;
+struct glfw_plataform plataform;
 
-B32 initPlataform(I32 w, I32 h) {
-  return createGLFWPlataform(&plataform, w, h);
+b32 plataform_init(i32 w, i32 h) {
+  return glfw_plataform_init(w, h, &plataform);
 }
 
-void deinitPlataform(void) { destroyGLFWPlataform(&plataform); }
+void plataform_deinit(void) { glfw_plataform_deinit(&plataform); }
 
-B32 pollPlataformEvents(void) { return pollGLFWEvents(&plataform); }
+b32 plataform_poll_events(void) { return glfw_plataform_poll_events(&plataform); }

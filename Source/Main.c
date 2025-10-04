@@ -1,31 +1,31 @@
-#include "Plataform.h"
-#include "WGPURenderer.h"
+#include "plataform.h"
+#include "wgpu_renderer.h"
 
 #include <stdio.h>
 
-#include <SF.h>
+#include <sf.h>
 #include <webgpu/webgpu.h>
 
 int main(void) {
-  WGPURenderer renderer = {0};
-  SFArena arena = {0};
+  struct wgpu_renderer renderer = {0};
+  struct sf_arena arena = {0};
 
-  sfAllocateArena(1024 * 1024, 16, &arena);
+  sf_allocate_arena(1024 * 1024, 16, &arena);
   if (!arena.data)
     goto cleanup;
 
-  if (!initPlataform(300, 300))
+  if (!plataform_init(300, 300))
     goto cleanup;
 
-  createWGPURenderer(&arena, &renderer);
-  if (!validateWGPURenderer(&renderer))
+  wgpu_renderer_init(&arena, &renderer);
+  if (!wgpu_renderer_validate(&renderer))
     goto cleanup;
 
-  while (pollPlataformEvents()) {
+  while (plataform_poll_events()) {
   }
 
 cleanup:
-  destroyWGPURenderer(&renderer);
-  deinitPlataform();
-  sfFreeArena(&arena);
+  wgpu_renderer_deinit(&renderer);
+  plataform_deinit();
+  sf_free_arena(&arena);
 }
