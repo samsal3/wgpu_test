@@ -65,7 +65,7 @@ AlignConsecutiveTableGenDefinitionColons:
   AlignFunctionDeclarations: false
   AlignFunctionPointers: false
   PadOperators:    false
-AlignEscapedNewlines: Right
+AlignEscapedNewlines: Left
 AlignOperands:   Align
 AlignTrailingComments:
   Kind:            Always
@@ -74,10 +74,10 @@ AllowAllArgumentsOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowBreakBeforeNoexceptSpecifier: Never
 AllowShortBlocksOnASingleLine: Never
-AllowShortCaseExpressionOnASingleLine: true
+AllowShortCaseExpressionOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortCompoundRequirementOnASingleLine: true
-AllowShortEnumsOnASingleLine: true
+AllowShortEnumsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLambdasOnASingleLine: All
@@ -125,7 +125,7 @@ BreakFunctionDefinitionParameters: false
 BreakInheritanceList: BeforeColon
 BreakStringLiterals: true
 BreakTemplateDeclarations: MultiLine
-ColumnLimit:     80
+ColumnLimit:     300
 CommentPragmas:  '^ IWYU pragma:'
 CompactNamespaces: false
 ConstructorInitializerIndentWidth: 4
@@ -167,7 +167,7 @@ IndentExternBlock: AfterExternBlock
 IndentGotoLabels: true
 IndentPPDirectives: None
 IndentRequiresClause: true
-IndentWidth:     3
+IndentWidth:     8
 IndentWrappedFunctionNames: false
 InsertBraces:    false
 InsertNewlineAtEOF: false
@@ -275,7 +275,7 @@ StatementMacros:
   - QT_REQUIRE_VERSION
 TableGenBreakInsideDAGArg: DontBreak
 TabWidth:        8
-UseTab:          Never
+UseTab:          Always
 VerilogBreakBetweenInstancePorts: true
 WhitespaceSensitiveMacros:
   - BOOST_PP_STRINGIZE
