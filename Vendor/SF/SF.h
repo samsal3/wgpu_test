@@ -56,7 +56,8 @@ struct sf_arena {
     (q)->prev = (q);                                                           \
   } while (0)
 
-#define SF_QUEUE_FOR_EACH(q, h) for ((q) = (h)->next; (q) != (h); (q) = (q)->next)
+#define SF_QUEUE_FOR_EACH(q, h)                                                \
+  for ((q) = (h)->next; (q) != (h); (q) = (q)->next)
 
 #define SF_QUEUE_INSERT_INTO_HEAD(q, h)                                        \
   do {                                                                         \
@@ -90,7 +91,8 @@ SF_EXPORT u64 sf_u64_align(u64 size, u64 alignment);
 SF_EXPORT void *sf_allocate_memory(u64 size);
 SF_EXPORT void sf_free_memory(void *data);
 
-SF_EXPORT void sf_allocate_arena(u64 capactiy, u64 alignment, struct sf_arena *arena);
+SF_EXPORT void sf_allocate_arena(u64 capactiy, u64 alignment,
+                                 struct sf_arena *arena);
 SF_EXPORT void sf_free_arena(struct sf_arena *arena);
 SF_EXPORT void *sf_allocate(struct sf_arena *arena, u64 size);
 
@@ -98,7 +100,8 @@ SF_EXPORT void sf_load_file_into_string_8(struct sf_arena *arena,
                                           struct sf_string_8 *path,
                                           struct sf_string_8 *out);
 
-SF_EXPORT b32 sf_compare_string_8(struct sf_string_8 const *lhs, struct sf_string_8 const *rhs);
+SF_EXPORT b32 sf_compare_string_8(struct sf_string_8 const *lhs,
+                                  struct sf_string_8 const *rhs);
 
 SF_EXPORT void sf_null_terminate_string_8(struct sf_arena *arena,
                                           struct sf_string_8 const *s,
@@ -115,7 +118,7 @@ SF_EXPORT void *sf_allocate_memory(u64 size) { return malloc(size); }
 SF_EXPORT void sf_free_memory(void *data) { free(data); }
 
 SF_EXPORT void sf_allocate_arena(u64 capacity, u64 alignment,
-                               struct sf_arena *arena) {
+                                 struct sf_arena *arena) {
   arena->data = sf_allocate_memory(capacity);
   if (arena->data) {
     arena->position = 0;
@@ -143,7 +146,7 @@ SF_EXPORT void *sf_allocate(struct sf_arena *arena, u64 size) {
   if (req > arena->capacity)
     return NULL;
 
-  prev= arena->position;
+  prev = arena->position;
   arena->position = sf_u64_align(req, arena->alignment);
 
   data = &arena->data[prev];
@@ -215,7 +218,7 @@ SF_EXPORT b32 sf_compare_string_8(struct sf_string_8 const *lhs,
 
 SF_EXPORT void sf_null_terminate_string_8(struct sf_arena *arena,
                                           struct sf_string_8 const *s,
-                                      struct sf_string_8 *out) {
+                                          struct sf_string_8 *out) {
   byte *data = NULL;
 
   SF_STRING_8_INIT(out);

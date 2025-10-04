@@ -1,7 +1,7 @@
 #ifndef GLFW_PLATAFORM_H
 #define GLFW_PLATAFORM_H
 
-#include <SF.h>
+#include <sf.h>
 
 #include <GLFW/glfw3.h>
 

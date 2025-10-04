@@ -13,8 +13,9 @@ static void wgpu_renderer_default_init(struct wgpu_renderer *r) {
   SF_QUEUE_INIT(&r->error_message_queue);
 }
 
-void wgpu_renderer_set_adapter(WGPURequestAdapterStatus status, WGPUAdapter adapter,
-                    char const *message, void *handle) {
+void wgpu_renderer_set_adapter(WGPURequestAdapterStatus status,
+                               WGPUAdapter adapter, char const *message,
+                               void *handle) {
   intptr_t *data = handle;
 
   (void)message;
@@ -26,8 +27,8 @@ void wgpu_renderer_set_adapter(WGPURequestAdapterStatus status, WGPUAdapter adap
 }
 
 void wgpu_renderer_set_device(WGPURequestDeviceStatus status, WGPUDevice device,
-                   char const *message, void *handle) {
-  intptr_t  *data = handle;
+                              char const *message, void *handle) {
+  intptr_t *data = handle;
 
   (void)message;
 
@@ -38,7 +39,7 @@ void wgpu_renderer_set_device(WGPURequestDeviceStatus status, WGPUDevice device,
 }
 
 void wgpu_renderer_unhandled_error(WGPUErrorType type, char const *message,
-                        void *data) {
+                                   void *data) {
   UNUSED(type);
   UNUSED(message);
   UNUSED(data);
@@ -90,7 +91,8 @@ void wgpu_renderer_init(struct sf_arena *arena, struct wgpu_renderer *r) {
     options.backendType = WGPUBackendType_Undefined;
     options.forceFallbackAdapter = 0;
 
-    wgpuInstanceRequestAdapter(r->instance, &options, wgpu_renderer_set_adapter, &adapter_handle);
+    wgpuInstanceRequestAdapter(r->instance, &options, wgpu_renderer_set_adapter,
+                               &adapter_handle);
     wgpu_renderer_await_adapter_request(&adapter_handle);
     if (-1 == adapter_handle)
       goto error;
@@ -112,11 +114,11 @@ void wgpu_renderer_init(struct sf_arena *arena, struct wgpu_renderer *r) {
     desc.deviceLostCallback = NULL;
     desc.deviceLostUserdata = NULL;
 
-
-    wgpuAdapterRequestDevice(r->adapter, &desc, wgpu_renderer_set_device, &device_handle);
+    wgpuAdapterRequestDevice(r->adapter, &desc, wgpu_renderer_set_device,
+                             &device_handle);
     wgpu_renderer_await_device_request(&device_handle);
 
-    if (-1 == device_handle) 
+    if (-1 == device_handle)
       goto error;
 
     r->device = (WGPUDevice)device_handle;
@@ -135,7 +137,8 @@ void wgpu_renderer_init(struct sf_arena *arena, struct wgpu_renderer *r) {
       goto error;
   }
 
-  wgpuDeviceSetUncapturedErrorCallback(r->device, wgpu_renderer_unhandled_error, r);
+  wgpuDeviceSetUncapturedErrorCallback(r->device, wgpu_renderer_unhandled_error,
+                                       r);
 
   return;
 
@@ -163,9 +166,13 @@ b32 wgpu_renderer_validate(struct wgpu_renderer *r) {
   return result;
 }
 
-void wgpu_renderer_begin_frame(struct wgpu_renderer *r) { UNUSED(r); }
+void wgpu_renderer_begin_frame(struct wgpu_renderer *r) {
+  UNUSED(r);
+}
 
-void wgpu_renderer_end_frame(struct wgpu_renderer *r) { UNUSED(r); }
+void wgpu_renderer_end_frame(struct wgpu_renderer *r) {
+  UNUSED(r);
+}
 
 void wgpu_renderer_deinit(struct wgpu_renderer *r) {
   if (r->command_encoder) {
