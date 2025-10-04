@@ -10,7 +10,7 @@ int main(void) {
 	struct wgpu_renderer renderer = {0};
 	struct sf_arena arena = {0};
 
-	sf_allocate_arena(1024 * 1024, 16, &arena);
+	sf_arena_init(1024 * 1024, 16, &arena);
 	if (!arena.data)
 		goto cleanup;
 
@@ -27,5 +27,5 @@ int main(void) {
 cleanup:
 	wgpu_renderer_deinit(&renderer);
 	plataform_deinit();
-	sf_free_arena(&arena);
+	sf_arena_deinit(&arena);
 }

@@ -90,8 +90,8 @@ SF_EXPORT u64 sf_align_u64(u64 size, u64 alignment);
 SF_EXPORT void *sf_allocate_memory(u64 size);
 SF_EXPORT void sf_free_memory(void *data);
 
-SF_EXPORT void sf_allocate_arena(u64 capactiy, u64 alignment, struct sf_arena *arena);
-SF_EXPORT void sf_free_arena(struct sf_arena *arena);
+SF_EXPORT void sf_arena_init(u64 capactiy, u64 alignment, struct sf_arena *arena);
+SF_EXPORT void sf_arena_deinit(struct sf_arena *arena);
 SF_EXPORT void *sf_allocate(struct sf_arena *arena, u64 size);
 
 SF_EXPORT void sf_load_file_into_string_8(struct sf_arena *arena, struct sf_string_8 *path, struct sf_string_8 *out);
@@ -114,7 +114,7 @@ SF_EXPORT void sf_free_memory(void *data) {
 	free(data);
 }
 
-SF_EXPORT void sf_allocate_arena(u64 capacity, u64 alignment, struct sf_arena *arena) {
+SF_EXPORT void sf_arena_init(u64 capacity, u64 alignment, struct sf_arena *arena) {
 	arena->data = sf_allocate_memory(capacity);
 	if (arena->data) {
 		arena->position = 0;
@@ -127,7 +127,7 @@ SF_EXPORT void sf_allocate_arena(u64 capacity, u64 alignment, struct sf_arena *a
 	}
 }
 
-SF_EXPORT void sf_free_arena(struct sf_arena *arena) {
+SF_EXPORT void sf_arena_deinit(struct sf_arena *arena) {
 	sf_free_memory(arena->data);
 	arena->data = NULL;
 	arena->position = 0;
