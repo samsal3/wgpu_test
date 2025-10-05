@@ -180,6 +180,7 @@ b32 wgpu_renderer_validate(struct wgpu_renderer *r) {
 
 void wgpu_renderer_begin_frame(struct wgpu_renderer *r) {
 	WGPUTextureViewDescriptor texture_view_desc;
+	WGPURenderPassDescriptor render_pass_desc;
 
 	wgpuSurfaceGetCurrentTexture(r->surface, &r->current_surface_texture);
 	if (WGPUSurfaceGetCurrentTextureStatus_Success != r->current_surface_texture.status) {
