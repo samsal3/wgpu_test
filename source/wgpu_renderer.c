@@ -107,12 +107,12 @@ void wgpu_renderer_init(plataform p, struct sf_arena *arena, struct wgpu_rendere
 	r->adapter = (WGPUAdapter)adapter_handle;
 
 	device_desc.nextInChain = NULL;
-	device_desc.label = "Device1";
+	device_desc.label = "device_1";
 	device_desc.requiredFeatureCount = 0;
 	device_desc.requiredFeatures = NULL;
 	device_desc.requiredLimits = NULL;
 	device_desc.defaultQueue.nextInChain = NULL;
-	device_desc.defaultQueue.label = "Queue1";
+	device_desc.defaultQueue.label = "queue_1";
 	device_desc.deviceLostCallback = NULL;
 	device_desc.deviceLostUserdata = NULL;
 
