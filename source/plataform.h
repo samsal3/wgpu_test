@@ -5,6 +5,8 @@
 
 struct wgpu_renderer;
 
+#define NIL_PLATAFORM (intptr_t)NULL
+
 typedef intptr_t plataform;
 
 plataform plataform_init(i32 w, i32 h);

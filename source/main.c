@@ -7,7 +7,7 @@
 #include <webgpu/webgpu.h>
 
 int main(void) {
-	plataform plataform = NULL;
+	plataform plataform = NIL_PLATAFORM;
 	struct wgpu_renderer renderer = {0};
 	struct sf_arena arena = {0};
 

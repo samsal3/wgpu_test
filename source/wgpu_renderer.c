@@ -3,7 +3,7 @@
 #include <webgpu/webgpu.h>
 
 static void wgpu_renderer_default_init(struct wgpu_renderer *r) {
-	r->plataform = NULL;
+	r->plataform = NIL_PLATAFORM;
 	r->instance = NULL;
 	r->adapter = NULL;
 	r->device = NULL;
