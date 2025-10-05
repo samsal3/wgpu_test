@@ -24,6 +24,8 @@ int main(void) {
 		goto cleanup;
 
 	while (plataform_poll_events(plataform)) {
+		wgpu_renderer_begin_frame(&renderer);
+		wgpu_renderer_end_frame(&renderer);
 	}
 
 cleanup:

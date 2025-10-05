@@ -14,7 +14,6 @@ b32 glfw_plataform_init(i32 w, i32 h, struct glfw_plataform *p) {
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	
-	printf("asdasdsad\n");
 	p->window = glfwCreateWindow(w, h, "WGPUTest", NULL, NULL);
 	if (!p->window)
 		goto error;

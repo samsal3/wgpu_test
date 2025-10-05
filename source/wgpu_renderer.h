@@ -24,11 +24,12 @@ struct wgpu_renderer {
 	i32 framebuffer_width;
 	i32 framebuffer_height;
 
+	WGPUCommandEncoder current_command_encoder;
+	WGPUCommandBuffer current_command_buffer;
 	WGPUSurfaceTexture current_surface_texture;
 	WGPUTextureView current_surface_texture_view;
+	WGPURenderPassEncoder current_render_pass_encoder;
 
-	WGPUCommandEncoder command_encoder;
-	WGPUCommandBuffer current_command_buffer;
 };
 
 void wgpu_renderer_init(plataform p, struct sf_arena *arena, struct wgpu_renderer *r);
