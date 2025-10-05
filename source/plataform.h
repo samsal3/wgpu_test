@@ -3,8 +3,14 @@
 
 #include <sf.h>
 
-b32 plataform_init(i32 w, i32 h);
-void plataform_deinit(void);
-b32 plataform_poll_events(void);
+struct wgpu_renderer;
+
+typedef intptr_t plataform;
+
+plataform plataform_init(i32 w, i32 h);
+void plataform_deinit(plataform p);
+b32 plataform_poll_events(plataform p);
+
+void plataform_init_wgpu_surface(plataform p, struct wgpu_renderer *r);
 
 #endif

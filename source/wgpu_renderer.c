@@ -3,6 +3,7 @@
 #include <webgpu/webgpu.h>
 
 static void wgpu_renderer_default_init(struct wgpu_renderer *r) {
+	r->plataform = NULL;
 	r->instance = NULL;
 	r->adapter = NULL;
 	r->device = NULL;
@@ -20,8 +21,8 @@ void wgpu_renderer_set_adapter(WGPURequestAdapterStatus status, WGPUAdapter adap
 
 	if (status == WGPURequestAdapterStatus_Success)
 		*data = (intptr_t)adapter;
-
-	*data = -1;
+	else
+		*data = -1;
 }
 
 void wgpu_renderer_set_device(WGPURequestDeviceStatus status, WGPUDevice device, char const *message, void *handle) {
@@ -31,8 +32,8 @@ void wgpu_renderer_set_device(WGPURequestDeviceStatus status, WGPUDevice device,
 
 	if (status == WGPURequestDeviceStatus_Success)
 		*data = (intptr_t)device;
-
-	*data = -1;
+	else
+		*data = -1;
 }
 
 void wgpu_renderer_unhandled_error(WGPUErrorType type, char const *message, void *data) {
@@ -62,8 +63,10 @@ void wgpu_renderer_await_device_request(intptr_t *data) {
 #endif
 }
 
-void wgpu_renderer_init(struct sf_arena *arena, struct wgpu_renderer *r) {
+void wgpu_renderer_init(plataform p, struct sf_arena *arena, struct wgpu_renderer *r) {
 	wgpu_renderer_default_init(r);
+
+	r->plataform = p;
 
 	UNUSED(arena);
 
@@ -77,18 +80,24 @@ void wgpu_renderer_init(struct sf_arena *arena, struct wgpu_renderer *r) {
 			goto error;
 	}
 
+	plataform_init_wgpu_surface(r->plataform, r);
+	assert(r->surface);
+	if (!r->surface)
+		goto error;
+
 	{
 		intptr_t adapter_handle = 0;
 		WGPURequestAdapterOptions options;
 
 		options.nextInChain = NULL;
-		options.compatibleSurface = NULL;
+		options.compatibleSurface = r->surface;
 		options.powerPreference = WGPUPowerPreference_HighPerformance;
 		options.backendType = WGPUBackendType_Undefined;
 		options.forceFallbackAdapter = 0;
 
 		wgpuInstanceRequestAdapter(r->instance, &options, wgpu_renderer_set_adapter, &adapter_handle);
 		wgpu_renderer_await_adapter_request(&adapter_handle);
+		assert(-1 != adapter_handle);
 		if (-1 == adapter_handle)
 			goto error;
 
@@ -111,7 +120,7 @@ void wgpu_renderer_init(struct sf_arena *arena, struct wgpu_renderer *r) {
 
 		wgpuAdapterRequestDevice(r->adapter, &desc, wgpu_renderer_set_device, &device_handle);
 		wgpu_renderer_await_device_request(&device_handle);
-
+		assert(-1 != device_handle);
 		if (-1 == device_handle)
 			goto error;
 

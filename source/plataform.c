@@ -2,16 +2,28 @@
 
 #include "glfw_plataform.h"
 
-struct glfw_plataform plataform;
+#include <assert.h>
 
-b32 plataform_init(i32 w, i32 h) {
-	return glfw_plataform_init(w, h, &plataform);
+struct glfw_plataform global_plataform;
+
+plataform plataform_init(i32 w, i32 h) {
+	if (glfw_plataform_init(w, h, &global_plataform))
+		return (plataform)&global_plataform;
+	else
+		return (plataform)NULL;
 }
 
-void plataform_deinit(void) {
-	glfw_plataform_deinit(&plataform);
+void plataform_deinit(plataform p) {
+	assert(p == (intptr_t)&global_plataform);
+	glfw_plataform_deinit(&global_plataform);
 }
 
-b32 plataform_poll_events(void) {
-	return glfw_plataform_poll_events(&plataform);
+b32 plataform_poll_events(plataform p) {
+	return glfw_plataform_poll_events(&global_plataform);
+}
+
+
+void plataform_init_wgpu_surface(plataform p, struct wgpu_renderer *r) {
+	assert(p == (intptr_t)&global_plataform);
+	glfw_plataform_init_wgpu_surface(&global_plataform, r);
 }

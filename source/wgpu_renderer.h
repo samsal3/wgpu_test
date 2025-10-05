@@ -1,6 +1,8 @@
 #ifndef WGPU_RENDERER_H
 #define WGPU_RENDERER_H
 
+#include "plataform.h"
+
 #include <sf.h>
 
 #include <webgpu/webgpu.h>
@@ -11,7 +13,9 @@ struct wgpu_frame {
 };
 
 struct wgpu_renderer {
+	plataform plataform;
 	WGPUInstance instance;
+	WGPUSurface surface;
 	WGPUAdapter adapter;
 	WGPUDevice device;
 	WGPUQueue queue;
@@ -24,7 +28,7 @@ struct wgpu_renderer {
 	struct sf_queue error_message_queue;
 };
 
-void wgpu_renderer_init(struct sf_arena *arena, struct wgpu_renderer *r);
+void wgpu_renderer_init(plataform p, struct sf_arena *arena, struct wgpu_renderer *r);
 b32 wgpu_renderer_validate(struct wgpu_renderer *r);
 
 void wgpu_renderer_deinit(struct wgpu_renderer *r);
