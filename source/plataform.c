@@ -24,6 +24,7 @@ b32 plataform_poll_events(plataform p) {
 }
 
 void plataform_window_dimensions(plataform p, i32 *w, i32 *h) {
+	UNUSED(p);
 	glfw_plataform_window_dimensions(&global_plataform, w, h);
 }
 
