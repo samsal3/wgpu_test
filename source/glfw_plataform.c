@@ -35,8 +35,14 @@ void glfw_plataform_deinit(struct glfw_plataform *p) {
 }
 
 b32 glfw_plataform_poll_events(struct glfw_plataform *p) {
+	assert(p->window);
 	glfwPollEvents();
 	return !glfwWindowShouldClose(p->window);
+}
+
+void glfw_plataform_window_dimensions(struct glfw_plataform *p, i32 *w, i32 *h) {
+	assert(p->window);
+	glfwGetFramebufferSize(p->window, w, h);
 }
 
 void glfw_plataform_init_wgpu_surface(struct glfw_plataform *p, struct wgpu_renderer *r) {

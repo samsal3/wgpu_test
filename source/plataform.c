@@ -23,6 +23,9 @@ b32 plataform_poll_events(plataform p) {
 	return glfw_plataform_poll_events(&global_plataform);
 }
 
+void plataform_window_dimensions(plataform p, i32 *w, i32 *h) {
+	glfw_plataform_window_dimensions(&global_plataform, w, h);
+}
 
 void plataform_init_wgpu_surface(plataform p, struct wgpu_renderer *r) {
 	UNUSED(p);

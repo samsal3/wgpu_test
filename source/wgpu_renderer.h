@@ -19,13 +19,16 @@ struct wgpu_renderer {
 	WGPUAdapter adapter;
 	WGPUDevice device;
 	WGPUQueue queue;
+
+	b32 surface_is_configured;
+	i32 framebuffer_width;
+	i32 framebuffer_height;
+
+	WGPUSurfaceTexture current_surface_texture;
+	WGPUTextureView current_surface_texture_view;
+
 	WGPUCommandEncoder command_encoder;
 	WGPUCommandBuffer current_command_buffer;
-
-	struct wgpu_frame frames[2];
-	u32 current_frame_index;
-
-	struct sf_queue error_message_queue;
 };
 
 void wgpu_renderer_init(plataform p, struct sf_arena *arena, struct wgpu_renderer *r);

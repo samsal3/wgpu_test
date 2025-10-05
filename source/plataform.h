@@ -13,6 +13,7 @@ plataform plataform_init(i32 w, i32 h);
 void plataform_deinit(plataform p);
 b32 plataform_poll_events(plataform p);
 
+void plataform_window_dimensions(plataform p, i32 *w, i32 *h);
 void plataform_init_wgpu_surface(plataform p, struct wgpu_renderer *r);
 
 #endif

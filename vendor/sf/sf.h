@@ -24,7 +24,7 @@ typedef int32_t b32;
 #define SF_TRUE 1
 #define SF_FALSE 0
 
-#define SF_SIZE(a) (Size)(sizeof(a) / sizeof(0 [a]))
+#define SF_SIZE(a) (size)(sizeof(a) / sizeof(0 [a]))
 #define SF_MIN(a, b) ((a) < (b) ? (a) : (b))
 #define SF_MAX(a, b) ((a) > (b) ? (a) : (b))
 
@@ -46,17 +46,15 @@ struct sf_arena {
 };
 
 #define UNUSED(e) (void)(e)
-
 #define SF_OFFSET_OF(ty, f) (ptrdiff_t)(&((ty *)(NULL))->f)
 #define SF_CONTAINER_OF(ty, p, f) (ty *)((char *)(p) - SF_OFFSET_OF(ty, f))
+#define SF_QUEUE_FOR_EACH(q, h) for ((q) = (h)->next; (q) != (h); (q) = (q)->next)
 
 #define SF_QUEUE_INIT(q)         \
 	do {                     \
 		(q)->next = (q); \
 		(q)->prev = (q); \
 	} while (0)
-
-#define SF_QUEUE_FOR_EACH(q, h) for ((q) = (h)->next; (q) != (h); (q) = (q)->next)
 
 #define SF_QUEUE_INSERT_INTO_HEAD(q, h) \
 	do {                            \
@@ -89,15 +87,11 @@ struct sf_arena {
 SF_EXPORT u64 sf_align_u64(u64 size, u64 alignment);
 SF_EXPORT void *sf_allocate_memory(u64 size);
 SF_EXPORT void sf_free_memory(void *data);
-
 SF_EXPORT void sf_arena_init(u64 capactiy, u64 alignment, struct sf_arena *arena);
 SF_EXPORT void sf_arena_deinit(struct sf_arena *arena);
 SF_EXPORT void *sf_allocate(struct sf_arena *arena, u64 size);
-
 SF_EXPORT void sf_load_file_into_string_8(struct sf_arena *arena, struct sf_string_8 *path, struct sf_string_8 *out);
-
 SF_EXPORT b32 sf_compare_string_8(struct sf_string_8 const *lhs, struct sf_string_8 const *rhs);
-
 SF_EXPORT void sf_null_terminate_string_8(struct sf_arena *arena, struct sf_string_8 const *s, struct sf_string_8 *out);
 
 #ifdef SF_IMPLEMENTATION
